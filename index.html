@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Priyanshu Kumar - Portfolio</title>
+
+    <style>
+        /* THEME VARIABLES */
+        .page {
+            --bg: #eef2f7;
+            --card: #ffffff;
+            --text: #222222;
+            --primary: #1f3c88;
+            --accent: #ffd966;
+            --row: #f5f7fb;
+            --border: #b8c0d0;
+        }
+        /* DARK MODE WITHOUT JAVASCRIPT:
+           When the hidden checkbox is :checked, the sibling (~) .page gets new colours */
+        #darkToggle:checked ~ .page {
+            --bg: #12161f;
+            --card: #1c2230;
+            --text: #e6e9ef;
+            --primary: #4a6fd8;
+            --row: #242b3b;
+            --border: #4a5166;
+        }
+        #darkToggle { display: none; }
+
+        html { scroll-behavior: smooth; }       /* smooth scrolling for menu links */
+        body { margin: 0; }
+
+        .page {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: Arial, Helvetica, sans-serif;
+            min-height: 100vh;
+            padding-bottom: 20px;
+            transition: background-color 0.5s, color 0.5s;
+        }
+
+        /*   STICKY NAVIGATION  */
+        nav {
+            position: sticky;                    /* stays at the top while scrolling */
+            top: 0;
+            z-index: 10;
+            background-color: var(--card);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            display: flex;                       /* flexbox: items in a row */
+            justify-content: center;             /* horizontal alignment */
+            align-items: center;                 /* vertical alignment */
+            gap: 5px;
+            padding: 8px;
+            transition: background-color 0.5s;
+        }
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+        nav a:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-3px);         /* moves up on hover */
+        }
+        /* the dark mode switch is a <label> linked to the hidden checkbox */
+        .switch {
+            cursor: pointer;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background-color: var(--accent);
+            color: #222;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+        .switch:hover { transform: rotate(-4deg) scale(1.08); }
+
+        /*  ANIMATED HEADER  */
+        header {
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            color: white;
+            padding: 50px 15px 40px;
+            /* gradient bigger than the box, then moved by keyframes */
+            background: linear-gradient(120deg, #1f3c88, #4a6fd8, #7b2ff7, #1f3c88);
+            background-size: 300% 300%;
+            animation: gradientMove 10s ease infinite;
+        }
+        @keyframes gradientMove {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* floating bubbles in the header */
+        .bubble {
+            position: absolute;
+            bottom: -60px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.15);
+            animation: floatUp linear infinite;
+        }
+        .bubble:nth-child(1) { 
+            left: 8%;  width: 40px; height: 40px; animation-duration: 8s; 
+        }
+        .bubble:nth-child(2) {
+             left: 25%; width: 20px; height: 20px; animation-duration: 6s; animation-delay: 2s; 
+        }
+        .bubble:nth-child(3) { 
+            left: 50%; width: 55px; height: 55px; animation-duration: 10s; animation-delay: 1s; 
+        }
+        .bubble:nth-child(4) { 
+            left: 72%; width: 25px; height: 25px; animation-duration: 7s; animation-delay: 3s; 
+        }
+        .bubble:nth-child(5) { 
+            left: 90%; width: 45px; height: 45px; animation-duration: 9s; 
+        }
+        @keyframes floatUp {
+            from { transform: translateY(0);      opacity: 1; }
+            to   { transform: translateY(-380px); opacity: 0; }
+        }
+
+        header > *:not(.bubble) { position: relative; }   /* keep text above bubbles */
+
+        header h1 {
+            margin: 0 0 10px;
+            font-size: 2.4em;
+            letter-spacing: 3px;
+            animation: dropIn 1s ease both;
+        }
+        @keyframes dropIn {
+            from { transform: translateY(-40px); opacity: 0; }
+            to   { transform: translateY(0);     opacity: 1; }
+        }
+
+        /* CSS-ONLY TYPING EFFECT:
+           the width grows in steps (one letter at a time) and a border blinks as the cursor */
+        .typing {
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 3px solid var(--accent);
+            font-size: 1.2em;
+            color: var(--accent);
+            width: 27ch;                          /* 27 characters wide */
+            animation: typing 4s steps(27) 1s both, caret 0.8s step-end infinite;
+        }
+        @keyframes typing { from { width: 0; } to { width: 27ch; } }
+        @keyframes caret  { 50% { border-color: transparent; } }
+
+        .contact-line { margin-top: 18px; }
+        .contact-line a { color: var(--accent); text-decoration: none; }
+        .contact-line a:hover { text-decoration: underline; }
+
+        /* STAT BOXES  */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 25px 15px 5px;
+        }
+        .stat {
+            background-color: var(--card);
+            border-radius: 10px;
+            padding: 15px 30px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            animation: pop 0.6s ease both;
+            transition: transform 0.3s;
+        }
+        .stat:nth-child(2) { animation-delay: 0.2s; }
+        .stat:nth-child(3) { animation-delay: 0.4s; }
+        .stat:hover { transform: translateY(-8px) scale(1.07); }
+        .stat b { display: block; font-size: 1.8em; color: var(--primary); }
+        @keyframes pop {
+            0%   { transform: scale(0); opacity: 0; }
+            70%  { transform: scale(1.15); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /*  SECTIONS  */
+        main { width: 850px; max-width: 94%; margin: 20px auto; }
+
+        section {
+            background-color: var(--card);
+            border-radius: 10px;
+            padding: 10px 30px 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+            /* each section fades up when the page loads, one after another */
+            animation: fadeUp 0.8s ease both;
+            transition: transform 0.3s, box-shadow 0.3s, background-color 0.5s;
+        }
+        section:nth-of-type(1) { animation-delay: 0.1s; }
+        section:nth-of-type(2) { animation-delay: 0.25s; }
+        section:nth-of-type(3) { animation-delay: 0.4s; }
+        section:nth-of-type(4) { animation-delay: 0.55s; }
+        section:nth-of-type(5) { animation-delay: 0.7s; }
+        section:hover { 
+            transform: translateY(-4px); 
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22); 
+        }
+        @keyframes fadeUp {
+            from { transform: translateY(40px); opacity: 0; }
+            to   { transform: translateY(0);    opacity: 1; }
+        }
+
+        h2 {
+            color: var(--primary);
+            position: relative;
+            padding-bottom: 6px;
+        }
+        /* underline that grows when you hover the section */
+        h2::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 3px;
+            width: 40px;
+            background-color: var(--primary);
+            transition: width 0.5s;
+        }
+        section:hover h2::after { width: 100%; }
+
+        p { text-align: justify; line-height: 1.7; }
+
+        /*  TABLE  */
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+        }
+        th, td {
+             border: 1px solid var(--border); 
+             padding: 10px; 
+             text-align: center; 
+            }
+        th { 
+            background-color: var(--primary); 
+            color: white; 
+        }
+        tbody tr:nth-child(even) td { 
+            background-color: var(--row); 
+        }
+        tbody tr { 
+            transition: transform 0.25s; 
+        }
+        tbody tr:hover { 
+            transform: scale(1.02); 
+        }
+        tbody tr:hover td { 
+            background-color: var(--accent); 
+            color: #222; 
+        }
+
+        /*  SKILL CHIPS  */
+        .skills-row { 
+            margin-bottom: 12px; 
+        }
+        .skills-row h3 { 
+            margin: 10px 0 6px; 
+            color: var(--primary); 
+        }
+        ul.chips { 
+            list-style: none; 
+            padding: 0; 
+            margin: 0; 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 10px; 
+        }
+        ul.chips li {
+            background-color: var(--row);
+            border: 2px solid var(--primary);
+            color: var(--text);
+            padding: 6px 16px;
+            border-radius: 20px;
+            transition: all 0.3s;
+            animation: float 3s ease-in-out infinite;    /* gentle up/down motion */
+        }
+        ul.chips li:nth-child(2n) { animation-delay: 0.5s; }
+        ul.chips li:nth-child(3n) { animation-delay: 1s; }
+        ul.chips li:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: scale(1.2) rotate(-3deg);
+            animation-play-state: paused;
+        }
+        @keyframes float { 50% { transform: translateY(-5px); } }
+
+        /*  PROJECT CARDS  */
+        ol.projects { 
+            list-style: none; 
+            padding: 0; 
+            counter-reset: p; 
+        }
+        ol.projects > li {
+            counter-increment: p;                       /* CSS counter for numbering */
+            position: relative;
+            background-color: var(--row);
+            border-left: 6px solid var(--primary);
+            border-radius: 8px;
+            padding: 12px 20px 12px 55px;
+            margin-bottom: 15px;
+            transition: all 0.35s;
+        }
+        ol.projects > li::before {
+            content: counter(p);                        /* shows 1, 2, ... */
+            position: absolute;
+            left: 14px;
+            top: 12px;
+            width: 28px;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            font-weight: bold;
+            transition: transform 0.6s;
+        }
+        ol.projects > li:hover {
+            transform: translateX(10px);
+            border-left-width: 14px;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+        }
+        ol.projects > li:hover::before { 
+            transform: rotate(360deg);  /* spinning number */
+        } 
+        ol.projects h3 { 
+            margin: 0 0 6px; 
+        }
+        .tech { 
+            color: var(--primary); 
+            font-weight: normal; 
+            font-size: 0.9em; 
+        }
+        ol.projects ul {
+             margin: 6px 0 0; 
+             line-height: 1.7; 
+            }
+
+        /*  BUTTON-LIKE LINK  */
+        .btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 26px;
+            border-radius: 30px;
+            background-color: var(--primary);
+            color: white;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .btn:hover { 
+            transform: translateY(-4px); 
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); 
+        }
+        /* shine that sweeps across the button on hover */
+        .btn::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            transition: left 0.6s;
+        }
+        .btn:hover::after { left: 150%; }
+
+        footer { text-align: center; font-size: 0.85em; padding: 10px; opacity: 0.8; }
+
+        /*  ACCESSIBILITY + MOBILE */
+        @media (prefers-reduced-motion: reduce) {      /* users who dislike motion */
+            * { animation: none !important; transition: none !important; }
+        }
+        @media (max-width: 600px) {
+            section { padding: 5px 15px 15px; }
+            header h1 { font-size: 1.6em; }
+            .typing { font-size: 0.95em; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- hidden checkbox: its checked / unchecked state controls dark mode (see CSS above) -->
+    <input type="checkbox" id="darkToggle">
+
+    <div class="page">
+
+        <!-- NAVIGATION: href="#id" scrolls to the section with that id -->
+        <nav>
+            <a href="#about">About</a>
+            <a href="#education">Education</a>
+            <a href="#skills">Skills</a>
+            <a href="#projects">Projects</a>
+            <label for="darkToggle" class="switch">Dark / Light</label>
+        </nav>
+
+        <header>
+            <span class="bubble"></span>
+            <span class="bubble"></span>
+            <span class="bubble"></span>
+            <span class="bubble"></span>
+            <span class="bubble"></span>
+            <h1>PRIYANSHU KUMAR</h1>
+            <div class="typing">Data Science &amp; Software Engineer</div>
+            <div class="contact-line">
+                &#9742; +91 8439467544 &nbsp;|&nbsp;
+                &#9993; <a href="mailto:pk2784554@gmail.com">pk2784554@gmail.com</a> &nbsp;|&nbsp;
+                <a href="https://github.com/PriyanshuKumarMorya" target="_blank">GitHub</a> &nbsp;|&nbsp;
+                <a href="https://www.linkedin.com/in/priyanshu-kumar-390709322/" target="_blank">LinkedIn</a>
+            </div>
+        </header>
+
+        <!-- STAT BOXES -->
+        <div class="stats">
+            <div class="stat"><b>9</b>Current CGPA</div>
+            <div class="stat"><b>2</b>Projects</div>
+            <div class="stat"><b>2</b>Internships</div>
+        </div>
+
+        <main>
+            <section id="about">
+                <h2>Objective</h2>
+                <p>
+                    I am currently pursuing a Bachelor of Technology from COER University with a
+                    strong interest in Data Science and Software Engineering. I am passionate about
+                    leveraging data to solve real-world problems and creating interactive,
+                    user-friendly web applications. I have gained hands-on experience through projects
+                    such as Hotel Management System and Intell-i-Green, which strengthened my skills in
+                    Python, Java, SQL, HTML, CSS, JavaScript and MongoDB.
+                </p>
+            </section>
+
+            <section id="education">
+                <h2>Education</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Qualification</th>
+                            <th>Institution</th>
+                            <th>Year</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Bachelor of Technology</td>
+                            <td>COER University</td>
+                            <td>2024 - 2028</td>
+                            <td>Current CGPA: 9</td>
+                        </tr>
+                        <tr>
+                            <td>Inter College</td>
+                            <td>Cambridge International School</td>
+                            <td>2022 - 2023</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>High School</td>
+                            <td>Cambridge International School</td>
+                            <td>2020 - 2021</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="skills">
+                <h2>Skills</h2>
+                <div class="skills-row">
+                    <h3>Programming Language</h3>
+                    <ul class="chips">
+                        <li>Java (DSA)</li>
+                        <li>Python</li>
+                        <li>C++</li>
+                        <li>HTML</li>
+                        <li>CSS</li>
+                        <li>JavaScript</li>
+                    </ul>
+                </div>
+                <div class="skills-row">
+                    <h3>Database</h3>
+                    <ul class="chips">
+                        <li>MySQL</li>
+                        <li>MongoDB</li>
+                    </ul>
+                </div>
+                <div class="skills-row">
+                    <h3>Framework</h3>
+                    <ul class="chips">
+                        <li>Spring Boot</li>
+                        <li>Node.js</li>
+                    </ul>
+                </div>
+                <div class="skills-row">
+                    <h3>Tools</h3>
+                    <ul class="chips">
+                        <li>IntelliJ IDEA</li>
+                        <li>VS Code</li>
+                        <li>Anti-Gravity</li>
+                        <li>Jupyter Notebook</li>
+                        <li>Power BI</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="experience">
+                <h2>Experience</h2>
+                <ul>
+                    <li><b>Internship</b> at StaxTech in 1st year</li>
+                    <li><b>Internship</b> at Code Alpha in 2nd year</li>
+                </ul>
+            </section>
+
+            <section id="projects">
+                <h2>Projects</h2>
+                <ol class="projects">
+                    <li>
+                        <h3>Hotel Management System <span class="tech">( Java + SQL )</span></h3>
+                        <ul>
+                            <li>A Java application that uses JDBC to manage hotel operations like
+                                bookings, customer records and billing through a database.</li>
+                            <li>Automates manual processes, improves efficiency and ensures accurate
+                                data storage and retrieval.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <h3>Intell-i-Green <span class="tech">( Python, HTML, CSS, JavaScript )</span></h3>
+                        <ul>
+                            <li>Developed a Flask-based smart agriculture system that uses machine learning
+                                algorithms to predict optimal crops based on soil, temperature and humidity
+                                data, improving decision accuracy.</li>
+                            <li>Integrated an AI-powered chatbot and user authentication system to provide
+                                real-time farmer assistance and secure access to personalized agricultural
+                                insights.</li>
+                        </ul>
+                    </li>
+                </ol>
+                <a class="btn" href="mailto:pk2784554@gmail.com">Contact Me</a>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
